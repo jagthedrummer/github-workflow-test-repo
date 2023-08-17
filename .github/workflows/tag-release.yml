@@ -33,3 +33,6 @@ jobs:
         with:
           tag_name: ${{ steps.tag-on-pr-merge.outputs.tag }}
           generate_release_notes: true
+  release:
+    uses: ./.github/workflows/release.yml
+    secrets: inherit
