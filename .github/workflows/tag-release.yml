@@ -12,6 +12,8 @@ jobs:
   TagOnPR:
     name: Tag on Pull Request merge
     runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.tag-on-pr-merge.outputs.tag }}
     # This 'if' condition is important for ensuring the workflow only runs for merged PRs
     #  (avoid running when a PR is discarded - closed without merging)
     if: github.event.pull_request.merged == true
@@ -35,5 +37,6 @@ jobs:
           generate_release_notes: true
   release:
     needs: TagOnPR
+    if: ${{ needs.TagOnPR.outputs.tag, 'v') }}
     uses: ./.github/workflows/release.yml
     secrets: inherit
