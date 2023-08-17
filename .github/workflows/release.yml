@@ -13,6 +13,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: "Hello!"
+    - name: "Hello! $TAG_NAME"
       run: echo "Hello!"
 

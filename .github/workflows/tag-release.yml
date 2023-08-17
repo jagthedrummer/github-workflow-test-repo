@@ -1,4 +1,4 @@
-name: "Tag on Pull Request merge"
+name: "Tag, Relase & Push"
 on:
   # Should trigger only when a Pull Request is Merged
   # (the action will not create the Tag if the Pull Request is discarded - closed without merge)
@@ -25,18 +25,23 @@ jobs:
           push-tag: true
       - name: Print fetched tag
         run: echo "${{ steps.tag-on-pr-merge.outputs.tag }}"
-      # If we created a `v*` tag then we checkout the repo and tag a release.
-      - name: Checkout
-        if: ${{ startsWith(steps.tag-on-pr-merge.outputs.tag, 'v') }}
-        uses: actions/checkout@v3
-      - name: Release
-        if: ${{ startsWith(steps.tag-on-pr-merge.outputs.tag, 'v') }}
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ steps.tag-on-pr-merge.outputs.tag }}
-          generate_release_notes: true
   release:
     needs: TagOnPR
+    outputs:
+      tag: ${{ needs.TagOnPR.outputs.tag }}
+    if: ${{ startsWith(needs.TagOnPR.outputs.tag, 'v') }}
+      # If we created a `v*` tag then we checkout the repo and tag a release.
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ needs.TagOnPR.outputs.tag }}
+          generate_release_notes: true
+  push:
+    needs: release
     if: ${{ startsWith(needs.TagOnPR.outputs.tag, 'v') }}
     uses: ./.github/workflows/release.yml
     secrets: inherit
+    env:
+      TAG_NAME: ${{ needs.release.outputs.tag }}
