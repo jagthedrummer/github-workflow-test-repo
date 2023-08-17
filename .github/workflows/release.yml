@@ -2,6 +2,10 @@ name: "Release Ruby Gems & NPM Packages"
 
 on:
   workflow_call:
+    inputs:
+      tag_name:
+        required: true
+        type: string
   workflow_dispatch:
   release:
     types:
@@ -13,6 +17,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: "Hello! $TAG_NAME"
-      run: echo "Hello!"
+    - name: "Hello! with $TAG_NAME"
+      run: echo "Hello! $TAG_NAME"
+      env:
+        TAG_NAME: ${{ inputs.tag_name }}
 

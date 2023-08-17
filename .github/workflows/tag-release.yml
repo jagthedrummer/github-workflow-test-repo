@@ -46,5 +46,5 @@ jobs:
     if: ${{ startsWith(needs.release.outputs.tag, 'v') }}
     uses: ./.github/workflows/release.yml
     secrets: inherit
-    env:
-      TAG_NAME: ${{ needs.release.outputs.tag }}
+    with:
+      tag_name: ${{ needs.release.outputs.tag }}
