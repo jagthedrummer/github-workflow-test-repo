@@ -37,6 +37,6 @@ jobs:
           generate_release_notes: true
   release:
     needs: TagOnPR
-    if: ${{ needs.TagOnPR.outputs.tag, 'v') }}
+    if: ${{ startsWith(needs.TagOnPR.outputs.tag, 'v') }}
     uses: ./.github/workflows/release.yml
     secrets: inherit
